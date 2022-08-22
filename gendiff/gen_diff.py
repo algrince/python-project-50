@@ -37,10 +37,10 @@ def generate_diff(file_path1, file_path2):
         diff = '{\n'
         for key in keys_list:
             if key in common:
-                diff = diff + f'    {key} : {decoder(f1[key])}\n'
+                diff = diff + f'    {key}: {decoder(f1[key])}\n'
             if key in diff1:
-                diff = diff + f'  - {key} : {decoder(f1[key])}\n'
+                diff = diff + f'  - {key}: {decoder(f1[key])}\n'
             if key in diff2:
-                diff = diff + f'  + {key} : {decoder(f2[key])}\n'
-        diff = diff + '}'
+                diff = diff + f'  + {key}: {decoder(f2[key])}\n'
+        diff = diff + '}\n'
         return diff
