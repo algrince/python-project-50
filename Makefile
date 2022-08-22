@@ -13,8 +13,7 @@ test-coverage:
 lint:
 	poetry run flake8 gendiff
 
-check:
-	selfcheck test lint
-
 selfcheck:
 	poetry check
+
+check: selfcheck test lint
