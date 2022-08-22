@@ -1,3 +1,6 @@
 .venv/
 dist/
 __pycache__
+file1.json
+file2.json
+
