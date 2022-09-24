@@ -2,11 +2,20 @@
 
 
 from gendiff.formats.default import formate_default
+from gendiff.formats.stylish import formate_stylish
 
 
-def formate(diff, style='default'):
+def formate(diff):
+    for line in diff:
+        if line[2] == 'nested':
+            return formate_type(diff, style='stylish')
+    return formate_type(diff)
+
+
+
+def formate_type(diff, style='default'):
     if style == 'default':
         formatted_diff = formate_default(diff)
     if style == 'stylish':
-        pass
+        formatted_diff = formate_stylish(diff)
     return formatted_diff
