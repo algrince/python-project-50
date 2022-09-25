@@ -11,6 +11,19 @@ CHANGES = (EQUAL, CHANGED, REMOVED, ADDED, NESTED) = (
 FILE_NUMBERS = (NM, FILE1, FILE2) = (0, 1, 2)
 
 
+def diff_one(dict1):
+    diff = []
+    keys = dict1.keys()
+    for key in keys:
+            value1 = dict1[key]
+            if isinstance(value1, dict):
+                value = diff_one(value1)
+                diff.append([key, value, NESTED, NM])
+            else:
+                diff.append([key, value1, EQUAL, NM])
+    return diff
+
+
 def diff_dict(dict1, dict2):
     keys_d1 = dict1.keys()
     keys_d2 = dict2.keys()
@@ -26,13 +39,29 @@ def diff_dict(dict1, dict2):
             diff.append([key, value, NESTED, NM])
         elif value1 == value2:
             diff.append([key, value1, EQUAL, NM])
+        elif isinstance(value1, dict):
+            value = diff_one(value1)
+            diff.append([key, value, NESTED, NM])
+        elif isinstance(value2, dict):
+            value = diff_one(value2)
+            diff.append([key, value, NESTED, NM])
         else:
             diff.append([key, value1, REMOVED, FILE1])
             diff.append([key, value2, ADDED, FILE2])
     for key in diff_in_1:
-        diff.append([key, dict1[key], REMOVED, NM])
+        value1 = dict1[key]
+        if isinstance(value1, dict):
+            value = diff_one(value1)
+            diff.append([key, value, NESTED, NM])
+        else:
+            diff.append([key, value1, REMOVED, NM])
     for key in diff_in_2:
-        diff.append([key, dict2[key], ADDED, NM])
+        value2 = dict2[key]
+        if isinstance(value2, dict):
+            value = diff_one(value2)
+            diff.append([key, value, NESTED, NM])
+        else:
+            diff.append([key, value2, ADDED, NM])
     return diff
 
 
