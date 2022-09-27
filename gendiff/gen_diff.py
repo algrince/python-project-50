@@ -16,11 +16,29 @@ def diff_one(dict1):
     keys = dict1.keys()
     for key in keys:
             value1 = dict1[key]
-            if isinstance(value1, dict):
-                value = diff_one(value1)
-                diff.append([key, value, NESTED, NM])
-            else:
-                diff.append([key, value1, EQUAL, NM])
+            diff = evaluate(key, diff, value1=value1)
+    return diff
+
+
+def evaluate(key, diff, value1=None, value2=None):
+    if isinstance(value1, dict) and isinstance(value2, dict):
+        value = diff_dict(value1, value2)
+        diff.append([key, value, NESTED, NM])
+    elif isinstance(value1, dict):
+        value = diff_one(value1)
+        diff.append([key, value, NESTED, FILE1])
+    elif isinstance(value2, dict):
+        value = diff_one(value2)
+        diff.append([key, value, NESTED, FILE2])
+    elif value1 is None:
+        diff.append([key, value2, ADDED, NM])
+    elif value2 is None:
+        diff.append([key, value1, REMOVED, NM])
+    elif value1 == value2:
+        diff.append([key, value1, EQUAL, NM])
+    else:
+        diff.append([key, value1, REMOVED, FILE1])
+        diff.append([key, value2, ADDED, FILE2])
     return diff
 
 
@@ -34,34 +52,13 @@ def diff_dict(dict1, dict2):
     for key in common:
         value1 = dict1[key]
         value2 = dict2[key]
-        if isinstance(value1, dict) and isinstance(value2, dict):
-            value = diff_dict(value1, value2)
-            diff.append([key, value, NESTED, NM])
-        elif value1 == value2:
-            diff.append([key, value1, EQUAL, NM])
-        elif isinstance(value1, dict):
-            value = diff_one(value1)
-            diff.append([key, value, NESTED, NM])
-        elif isinstance(value2, dict):
-            value = diff_one(value2)
-            diff.append([key, value, NESTED, NM])
-        else:
-            diff.append([key, value1, REMOVED, FILE1])
-            diff.append([key, value2, ADDED, FILE2])
+        diff = evaluate(key, diff, value1=value1, value2=value2)
     for key in diff_in_1:
         value1 = dict1[key]
-        if isinstance(value1, dict):
-            value = diff_one(value1)
-            diff.append([key, value, NESTED, NM])
-        else:
-            diff.append([key, value1, REMOVED, NM])
+        diff = evaluate(key, diff, value1=value1)
     for key in diff_in_2:
         value2 = dict2[key]
-        if isinstance(value2, dict):
-            value = diff_one(value2)
-            diff.append([key, value, NESTED, NM])
-        else:
-            diff.append([key, value2, ADDED, NM])
+        diff = evaluate(key, diff, value2=value2)
     return diff
 
 
