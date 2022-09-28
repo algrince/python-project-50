@@ -14,12 +14,13 @@ def diff_one(dict1):
     diff = []
     keys = dict1.keys()
     for key in keys:
-            value1 = dict1[key]
-            diff = evaluate(key, diff, **{'key3': value1})
+        value1 = dict1[key]
+        diff = evaluate(key, diff, **{'key3': value1})
     return diff
 
 
-def evaluate(key, diff, **kwargs):
+def evaluate(  # noqa: C901
+        key, diff, **kwargs):
     v1 = kwargs.get('key1', ' ')
     v2 = kwargs.get('key2', ' ')
     v3 = kwargs.get('key3', ' ')
@@ -27,14 +28,8 @@ def evaluate(key, diff, **kwargs):
         if isinstance(v1, dict) and isinstance(v2, dict):
             value = diff_dict(v1, v2)
             diff.append([key, value, EQUAL, NESTED])
-        elif isinstance(v1, dict):
-            value = diff_one(v1)
-            diff.append([key, value, REMOVED, NESTED])
-            diff.append([key, v2, ADDED, PLAIN])
-        elif isinstance(v2, dict):
-            value = diff_one(v2)
-            diff.append([key, v1, REMOVED, PLAIN])
-            diff.append([key, value, ADDED, NESTED])
+        elif isinstance(v1, dict) or isinstance(v2, dict):
+            diff = evaluate_vars(v1, v2, key, diff)
         else:
             if v1 == v2:
                 diff.append([key, v1, EQUAL, PLAIN])
@@ -54,8 +49,20 @@ def evaluate_var(var, key, number, diff):
     if isinstance(var, dict):
         value = diff_one(var)
         diff.append([key, value, state(number), NESTED])
-    else: 
+    else:
         diff.append([key, var, state(number), PLAIN])
+    return diff
+
+
+def evaluate_vars(first_var, second_var, key, diff):
+    if isinstance(first_var, dict):
+        value = diff_one(first_var)
+        diff.append([key, value, REMOVED, NESTED])
+        diff.append([key, second_var, ADDED, PLAIN])
+    elif isinstance(second_var, dict):
+        value = diff_one(second_var)
+        diff.append([key, value, ADDED, NESTED])
+        diff.append([key, second_var, REMOVED, PLAIN])
     return diff
 
 
@@ -67,6 +74,7 @@ def state(number):
     if number == 3:
         return EQUAL
 
+
 def diff_dict(dict1, dict2):
     keys_d1 = dict1.keys()
     keys_d2 = dict2.keys()
@@ -77,10 +85,10 @@ def diff_dict(dict1, dict2):
     for key in common:
         value1 = dict1[key]
         value2 = dict2[key]
-        diff = evaluate(key, diff, **{'key1' : value1, 'key2' : value2})
+        diff = evaluate(key, diff, **{'key1': value1, 'key2': value2})
     for key in diff_in_1:
         value1 = dict1[key]
-        diff = evaluate(key, diff, **{'key1' : value1})
+        diff = evaluate(key, diff, **{'key1': value1})
     for key in diff_in_2:
         value2 = dict2[key]
         diff = evaluate(key, diff, **{'key2': value2})

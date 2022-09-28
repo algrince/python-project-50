@@ -12,7 +12,6 @@ def formate(diff):
     return formate_type(diff)
 
 
-
 def formate_type(diff, style='default'):
     if style == 'default':
         formatted_diff = formate_default(diff)
