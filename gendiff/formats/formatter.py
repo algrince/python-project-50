@@ -7,7 +7,7 @@ from gendiff.formats.stylish import formate_stylish
 
 def formate(diff):
     for line in diff:
-        if line[2] == 'nested':
+        if line[3] == 'nested':
             return formate_type(diff, style='stylish')
     return formate_type(diff)
 

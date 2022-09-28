@@ -5,10 +5,9 @@ from gendiff.parser import parse
 from gendiff.formats.formatter import formate
 
 
-CHANGES = (EQUAL, CHANGED, REMOVED, ADDED, NESTED) = (
-    'equal', 'changed', 'removed', 'added', 'nested'
-)
-FILE_NUMBERS = (NM, FILE1, FILE2) = (0, 1, 2)
+CHANGES = (EQUAL, REMOVED, ADDED) = (
+    'equal', 'removed', 'added')
+STYLES = (NESTED, PLAIN) = ('nested', 'plain')
 
 
 def diff_one(dict1):
@@ -16,31 +15,52 @@ def diff_one(dict1):
     keys = dict1.keys()
     for key in keys:
             value1 = dict1[key]
-            diff = evaluate(key, diff, value1=value1)
+            diff = evaluate(key, diff, **{'key3': value1})
     return diff
 
 
-def evaluate(key, diff, value1=None, value2=None):
-    if isinstance(value1, dict) and isinstance(value2, dict):
-        value = diff_dict(value1, value2)
-        diff.append([key, value, NESTED, NM])
-    elif isinstance(value1, dict):
-        value = diff_one(value1)
-        diff.append([key, value, NESTED, FILE1])
-    elif isinstance(value2, dict):
-        value = diff_one(value2)
-        diff.append([key, value, NESTED, FILE2])
-    elif value1 is None:
-        diff.append([key, value2, ADDED, NM])
-    elif value2 is None:
-        diff.append([key, value1, REMOVED, NM])
-    elif value1 == value2:
-        diff.append([key, value1, EQUAL, NM])
-    else:
-        diff.append([key, value1, REMOVED, FILE1])
-        diff.append([key, value2, ADDED, FILE2])
+def evaluate(key, diff, **kwargs):
+    print(diff)
+    v1 = kwargs.get('key1', ' ')
+    v2 = kwargs.get('key2', ' ')
+    v3 = kwargs.get('key3', ' ')
+    if v1 != ' ' and v2 != ' ':
+        if isinstance(v1, dict) and isinstance(v2, dict):
+            value = diff_dict(v1, v2)
+            diff.append([key, value, EQUAL, NESTED])
+        elif isinstance(v1, dict):
+            value = diff_one(v1)
+            diff.append([key, value, REMOVED, NESTED])
+            diff.append([key, v2, ADDED, PLAIN])
+        elif isinstance(v2, dict):
+            value = diff_one(v2)
+            diff.append([key, v1, REMOVED, PLAIN])
+            diff.append([key, value, ADDED, NESTED])
+        else:
+            if v1 == v2:
+                diff.append([key, v1, EQUAL, PLAIN])
+            elif v1 != v2:
+                diff.append([key, v1, REMOVED, PLAIN])
+                diff.append([key, v2, ADDED, PLAIN])
+    elif v1 != ' ':
+        if isinstance(v1, dict):
+            value = diff_one(v1)
+            diff.append([key, value, REMOVED, NESTED])
+        else:
+            diff.append([key, v1, REMOVED, PLAIN])
+    elif v2 != ' ':
+        if isinstance(v2, dict):
+            value = diff_one(v2)
+            diff.append([key, value, ADDED, NESTED])
+        else:
+            diff.append([key, v2, ADDED, PLAIN])
+    elif v3 != ' ':
+        if isinstance(v3, dict):
+            value = diff_one(v3)
+            diff.append([key, value, EQUAL, NESTED])
+        else: 
+            diff.append([key, v3, EQUAL, PLAIN])
     return diff
-
 
 def diff_dict(dict1, dict2):
     keys_d1 = dict1.keys()
@@ -52,13 +72,13 @@ def diff_dict(dict1, dict2):
     for key in common:
         value1 = dict1[key]
         value2 = dict2[key]
-        diff = evaluate(key, diff, value1=value1, value2=value2)
+        diff = evaluate(key, diff, **{'key1' : value1, 'key2' : value2})
     for key in diff_in_1:
         value1 = dict1[key]
-        diff = evaluate(key, diff, value1=value1)
+        diff = evaluate(key, diff, **{'key1' : value1})
     for key in diff_in_2:
         value2 = dict2[key]
-        diff = evaluate(key, diff, value2=value2)
+        diff = evaluate(key, diff, **{'key2': value2})
     return diff
 
 

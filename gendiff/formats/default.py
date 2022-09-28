@@ -26,7 +26,7 @@ def make_formate(sort_dict, nest_lvl=0):
 
 
 def make_line(line, formatter=' ', space_count=2):
-    key, value, state, n_file = line
+    key, value, state, nest = line
     new_string = '{}{}{}: {}\n'
     string_line = new_string.format(
         formatter * space_count,
