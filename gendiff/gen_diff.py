@@ -20,7 +20,6 @@ def diff_one(dict1):
 
 
 def evaluate(key, diff, **kwargs):
-    print(diff)
     v1 = kwargs.get('key1', ' ')
     v2 = kwargs.get('key2', ' ')
     v3 = kwargs.get('key3', ' ')
@@ -43,24 +42,30 @@ def evaluate(key, diff, **kwargs):
                 diff.append([key, v1, REMOVED, PLAIN])
                 diff.append([key, v2, ADDED, PLAIN])
     elif v1 != ' ':
-        if isinstance(v1, dict):
-            value = diff_one(v1)
-            diff.append([key, value, REMOVED, NESTED])
-        else:
-            diff.append([key, v1, REMOVED, PLAIN])
+        diff = evaluate_var(v1, key, 1, diff)
     elif v2 != ' ':
-        if isinstance(v2, dict):
-            value = diff_one(v2)
-            diff.append([key, value, ADDED, NESTED])
-        else:
-            diff.append([key, v2, ADDED, PLAIN])
+        diff = evaluate_var(v2, key, 2, diff)
     elif v3 != ' ':
-        if isinstance(v3, dict):
-            value = diff_one(v3)
-            diff.append([key, value, EQUAL, NESTED])
-        else: 
-            diff.append([key, v3, EQUAL, PLAIN])
+        diff = evaluate_var(v3, key, 3, diff)
     return diff
+
+
+def evaluate_var(var, key, number, diff):
+    if isinstance(var, dict):
+        value = diff_one(var)
+        diff.append([key, value, state(number), NESTED])
+    else: 
+        diff.append([key, var, state(number), PLAIN])
+    return diff
+
+
+def state(number):
+    if number == 1:
+        return REMOVED
+    if number == 2:
+        return ADDED
+    if number == 3:
+        return EQUAL
 
 def diff_dict(dict1, dict2):
     keys_d1 = dict1.keys()

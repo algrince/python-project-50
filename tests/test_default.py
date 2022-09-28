@@ -19,11 +19,11 @@ beta = {
 
 def test_diff_dict():
     expected = [
-        ['key', 'value', 'equal', 0],
-        ['llave', 'valor', 'removed', 1],
-        ['llave', 'valor222', 'added', 2],
-        ['kluc', 'znac', 'removed', 0],
-        ['zamok', '123', 'added', 0]
+        ['key', 'value', 'equal', 'plain'],
+        ['llave', 'valor', 'removed', 'plain'],
+        ['llave', 'valor222', 'added', 'plain'],
+        ['kluc', 'znac', 'removed', 'plain'],
+        ['zamok', '123', 'added', 'plain']
     ]
     assert expected == diff_dict(alfa, beta)
 
