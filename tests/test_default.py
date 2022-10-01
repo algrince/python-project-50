@@ -2,7 +2,7 @@
 
 
 from gendiff.gen_diff import generate_diff
-from gendiff.gen_diff import diff_dict, diff_one, evaluate, state
+from gendiff.gen_diff import diff_dict, diff_one, evaluate
 
 alfa = {
     'key': 'value',
@@ -55,11 +55,6 @@ def test_evaluate_diff1():
     assert added_line == evaluate('diff_in_2', [], **{'key2': 'value2'})
     assert equal_line == evaluate('key3', [], **{'key3': 'value3'})
 
-
-def test_state():
-    assert 'removed' == state(1)
-    assert 'added' == state(2)
-    assert 'equal' == state(3)
     
 def test_format_json():
     with open('./tests/fixtures/expected.txt','r') as fixture:

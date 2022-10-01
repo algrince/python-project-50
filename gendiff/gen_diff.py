@@ -5,18 +5,13 @@ from gendiff.parser import parse
 from gendiff.formats.formatter import formate
 
 
-CHANGES = (EQUAL, REMOVED, ADDED) = (
-    'equal', 'removed', 'added')
+CHANGES = (EQUAL, REMOVED, ADDED, UPDATED, NO_UPD) = (
+    'equal', 'removed', 'added', 'updated', 'not updated')
 STYLES = (NESTED, PLAIN) = ('nested', 'plain')
 
 
-def diff_one(dict1):
-    diff = []
-    keys = dict1.keys()
-    for key in keys:
-        value1 = dict1[key]
-        diff = evaluate(key, diff, **{'key3': value1})
-    return diff
+def detect_nest(nest):
+    return NESTED if nest is True else PLAIN
 
 
 def evaluate(  # noqa: C901
@@ -27,52 +22,54 @@ def evaluate(  # noqa: C901
     if v1 != ' ' and v2 != ' ':
         if isinstance(v1, dict) and isinstance(v2, dict):
             value = diff_dict(v1, v2)
-            diff.append([key, value, EQUAL, NESTED])
+            diff.append([key, value, EQUAL, detect_nest(nest=True), NO_UPD])
         elif isinstance(v1, dict) or isinstance(v2, dict):
             diff = evaluate_vars(v1, v2, key, diff)
         else:
             if v1 == v2:
-                diff.append([key, v1, EQUAL, PLAIN])
+                diff.append([key, v1, EQUAL, PLAIN, NO_UPD])
             elif v1 != v2:
-                diff.append([key, v1, REMOVED, PLAIN])
-                diff.append([key, v2, ADDED, PLAIN])
+                diff = evaluate_update(v1, v2, key, diff)
     elif v1 != ' ':
-        diff = evaluate_var(v1, key, 1, diff)
+        diff = evaluate_var(v1, key, REMOVED, diff)
     elif v2 != ' ':
-        diff = evaluate_var(v2, key, 2, diff)
+        diff = evaluate_var(v2, key, ADDED, diff)
     elif v3 != ' ':
-        diff = evaluate_var(v3, key, 3, diff)
+        diff = evaluate_var(v3, key, EQUAL, diff)
     return diff
 
 
-def evaluate_var(var, key, number, diff):
+def evaluate_update(
+    var1, var2, 
+    key, diff, 
+    nest1=False, nest2=False
+):
+    diff.append([key, var1, REMOVED, 
+        detect_nest(nest1), 
+        {UPDATED: var2}])
+    diff.append([key, var2, ADDED,
+        detect_nest(nest2),
+        UPDATED])
+    return diff
+
+
+def evaluate_var(var, key, state, diff):
     if isinstance(var, dict):
         value = diff_one(var)
-        diff.append([key, value, state(number), NESTED])
+        diff.append([key, value, state, NESTED, NO_UPD])
     else:
-        diff.append([key, var, state(number), PLAIN])
+        diff.append([key, var, state, PLAIN, NO_UPD])
     return diff
 
 
-def evaluate_vars(first_var, second_var, key, diff):
-    if isinstance(first_var, dict):
-        value = diff_one(first_var)
-        diff.append([key, value, REMOVED, NESTED])
-        diff.append([key, second_var, ADDED, PLAIN])
-    elif isinstance(second_var, dict):
-        value = diff_one(second_var)
-        diff.append([key, value, ADDED, NESTED])
-        diff.append([key, second_var, REMOVED, PLAIN])
+def evaluate_vars(var1, var2, key, diff):
+    if isinstance(var1, dict):
+        value = diff_one(var1)
+        diff = evaluate_update(value, var2, key, diff, nest1=True)
+    elif isinstance(var2, dict):
+        value = diff_one(var2)
+        diff = evaluate_update(var1, value, key, diff, nest2=True)
     return diff
-
-
-def state(number):
-    if number == 1:
-        return REMOVED
-    if number == 2:
-        return ADDED
-    if number == 3:
-        return EQUAL
 
 
 def diff_dict(dict1, dict2):
@@ -95,9 +92,19 @@ def diff_dict(dict1, dict2):
     return diff
 
 
-def generate_diff(file_path1, file_path2):
+def diff_one(dict1):
+    diff = []
+    keys = dict1.keys()
+    for key in keys:
+        value1 = dict1[key]
+        diff = evaluate(key, diff, **{'key3': value1})
+    return diff
+
+
+
+def generate_diff(file_path1, file_path2, output_format='stylish'):
     data1 = parse(file_path1)
     data2 = parse(file_path2)
     diff = diff_dict(data1, data2)
-    formatted_diff = formate(diff)
+    formatted_diff = formate(diff, output_format)
     return formatted_diff
