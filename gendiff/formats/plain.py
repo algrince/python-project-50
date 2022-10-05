@@ -4,6 +4,7 @@ from gendiff.formats.default import sort_data
 
 
 statuses = {
+    'equal': '',
     'added': 'Property {key} was added with value {value1}\n',
     'removed': 'Property {key} was removed\n',
     'updated': 'Property {key} was updated. From {value1} to {value2}\n'
@@ -12,22 +13,33 @@ statuses = {
 
 def formate_plain(data, nest_lvl=0):
     sorted_data = sort_data(data)
-    for line in sorted_data:
-        if line[3] == 'nested':
-            level = nest_lvl + 1
-            line[1] = formate_plain(line[1], nest_lvl=level)
-    string_data = make_plain(sorted_data, nest_lvl)
+    plain_data = make_plain(sorted_data)
+    string_data = make_plain_string(plain_data)
     return string_data
 
 
-def make_plain(sorted_data, nest_lvl=0):
-    string_diff = ''
+def make_plain(sorted_data, key=''):
+    plain_diff = []
     for line in sorted_data:
-        print('sorted line', line)
-        if line[2] == 'equal' or line[4] == 'updated':
+        s_key, s_value, s_state, s_nest, s_update = line
+        s_key = key + '.' + s_key
+        if line[4] == 'updated':
+            print('UPDATED', line, '\n')
             continue
         else:
-            plain_line = make_plain_line(line, nest_lvl=0)
+            if line[3] == 'nested':
+                print('nested line', line, '\n')
+                line = make_plain(s_value, key=s_key)
+            print('line', line, '\n')
+            plain_line = make_plain_line(line)
+            plain_diff.append(plain_line)
+            print('DIFF', plain_diff)
+    return plain_diff
+        
+
+def make_plain_string(plain_data):
+    string_diff = ''
+    for line in plain_data:
         state = line[2]
         added_status = statuses[state]
         if state == 'added':
@@ -57,7 +69,8 @@ def transform_complex(var1, var2):
 
 
 def make_plain_line(line, nest_lvl=0):
-    print(line)
+    if len(line) == 1:
+        return line[0]
     key, value, state, nest, update = line
     if isinstance(update, dict):
         value2 = update.get('updated')
