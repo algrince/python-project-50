@@ -1,7 +1,7 @@
 #!/usr/bin/env pyhton3
 
 from gendiff.formats.default import sort_data
-
+from gendiff.scripts.decoder import decode
 
 statuses = {
     'equal': '',
@@ -16,11 +16,9 @@ def formate_plain(data, nest_lvl=0):
     return string_data
 
 
-
 def make_plain(sorted_data, key=''):
     string_data = ''
     for line in sorted_data:
-        print('line', line, '\n')
         old_key, value, status, nest, update = line
         new_key = transform_key(old_key, key)
         if update == 'updated':
@@ -54,7 +52,6 @@ def transform_complex(var):
 
 
 def make_plain_string(old_key, val1, val2, status):
-    print(status)
     added_status = statuses[status]
     val1 = trans_var(val1)
     val2 = trans_var(val2)
@@ -77,7 +74,10 @@ def make_plain_string(old_key, val1, val2, status):
 
 
 def trans_var(var):
-    if var != '[complex value]':
+    var = decode(var)
+    simple_vars = ['false', 'true', 
+        'null', '[complex value]'] 
+    if var not in simple_vars:
         var = f"'{var}'"
     return var
 
