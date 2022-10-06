@@ -24,7 +24,8 @@ def make_plain(sorted_data, key=''):
         if update == 'updated':
             continue
         elif nest == 'nested' and status == 'equal':
-            string_line = make_plain(value, key=new_key)
+            new_value = sorted(value, key=lambda x: x[0])
+            string_line = make_plain(new_value, key=new_key)
         elif status == 'equal':
             continue
         else:
@@ -88,5 +89,3 @@ def transform_key(old_key, key):
     else:
         new_key = old_key
     return new_key
-
-
