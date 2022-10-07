@@ -40,16 +40,16 @@ def evaluate(  # noqa: C901
 
 
 def evaluate_update(
-    var1, var2, 
-    key, diff, 
+    var1, var2,
+    key, diff,
     nest1=False, nest2=False
 ):
-    diff.append([key, var1, REMOVED, 
-        detect_nest(nest1), 
-        {UPDATED: var2}])
+    diff.append([key, var1, REMOVED,
+                detect_nest(nest1),
+                {UPDATED: var2}])
     diff.append([key, var2, ADDED,
-        detect_nest(nest2),
-        UPDATED])
+                detect_nest(nest2),
+                UPDATED])
     return diff
 
 
@@ -99,7 +99,6 @@ def diff_one(dict1):
         value1 = dict1[key]
         diff = evaluate(key, diff, **{'key3': value1})
     return diff
-
 
 
 def generate_diff(file_path1, file_path2, output_format='stylish'):

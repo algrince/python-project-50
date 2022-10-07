@@ -10,6 +10,7 @@ statuses = {
     'updated': "Property '{key}' was updated. From {value1} to {value2}\n"
 }
 
+
 def formate_plain(data, nest_lvl=0):
     sorted_data = sort_data(data)
     string_data = make_plain(sorted_data)
@@ -33,7 +34,7 @@ def make_plain(sorted_data, key=''):
             string_line = make_plain_string(new_key, value, value2, status)
         string_data += string_line
     return string_data
-        
+
 
 def transform_update(update, status, value):
     if isinstance(update, dict):
@@ -76,8 +77,8 @@ def make_plain_string(old_key, val1, val2, status):
 
 def trans_var(var):
     var = decode(var)
-    simple_vars = ['false', 'true', 
-        'null', '[complex value]'] 
+    simple_vars = ['false', 'true', 'null',
+                   '[complex value]']
     if var not in simple_vars:
         var = f"'{var}'"
     return var

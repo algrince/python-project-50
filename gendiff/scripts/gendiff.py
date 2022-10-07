@@ -10,12 +10,12 @@ DESCRIPTION = "Compares two configuration files and shows the difference"
 parser = argparse.ArgumentParser(description=DESCRIPTION)
 parser.add_argument(
     'first_file',
-    type=str, 
+    type=str,
     metavar='first_file'
 )
 parser.add_argument(
     'second_file',
-    type=str, 
+    type=str,
     metavar='second_file'
 )
 parser.add_argument(
@@ -30,7 +30,7 @@ parser.add_argument(
 def main():
     args = parser.parse_args()
     diff = generate_diff(
-        args.first_file, 
+        args.first_file,
         args.second_file,
         args.format
     )
