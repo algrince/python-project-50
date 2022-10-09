@@ -19,38 +19,38 @@ beta = {
 
 def test_diff_dict():
     expected = [
-        ['llave', 'valor', 'removed', 'plain'],
-        ['llave', 'valor222', 'added', 'plain'],
-        ['key', 'value', 'equal', 'plain'],
-        ['kluc', 'znac', 'removed', 'plain'],
-        ['zamok', '123', 'added', 'plain']
+        ['llave', 'valor', 'removed', 'plain', {'updated': 'valor222'}],
+        ['llave', 'valor222', 'added', 'plain', 'updated'],
+        ['key', 'value', 'equal', 'plain', 'not updated'],
+        ['kluc', 'znac', 'removed', 'plain', 'not updated'],
+        ['zamok', '123', 'added', 'plain', 'not updated']
     ]
     assert expected == diff_dict(alfa, beta)
 
 
 def test_diff_one():
     expected = [
-        ['key', 'value', 'equal', 'plain'],
-        ['llave', 'valor', 'equal', 'plain'],
-        ['kluc', 'znac', 'equal', 'plain']
+        ['key', 'value', 'equal', 'plain', 'not updated'],
+        ['llave', 'valor', 'equal', 'plain', 'not updated'],
+        ['kluc', 'znac', 'equal', 'plain', 'not updated']
     ]
     assert expected == diff_one(alfa)
 
 
 def test_evaluate_common():
-    equal_line = [['common', 'value', 'equal', 'plain']]
+    equal_line = [['common', 'value', 'equal', 'plain', 'not updated']]
     assert equal_line == evaluate('common', [], 
             **{'key1': 'value', 'key2': 'value'})
-    diff_line = [['common', '12345', 'removed', 'plain'],
-            ['common', '67890', 'added', 'plain']]
+    diff_line = [['common', '12345', 'removed', 'plain', {'updated': '67890'}],
+            ['common', '67890', 'added', 'plain', 'updated']]
     assert diff_line == evaluate('common', [],
             **{'key1': '12345', 'key2': '67890'})
 
 
 def test_evaluate_diff1():
-    removed_line = [['diff_in_1', 'value1', 'removed', 'plain']]
-    added_line = [['diff_in_2', 'value2', 'added', 'plain']]
-    equal_line = [['key3', 'value3', 'equal', 'plain']]
+    removed_line = [['diff_in_1', 'value1', 'removed', 'plain', 'not updated']]
+    added_line = [['diff_in_2', 'value2', 'added', 'plain', 'not updated']]
+    equal_line = [['key3', 'value3', 'equal', 'plain', 'not updated']]
     assert removed_line == evaluate('diff_in_1', [], **{'key1': 'value1'})
     assert added_line == evaluate('diff_in_2', [], **{'key2': 'value2'})
     assert equal_line == evaluate('key3', [], **{'key3': 'value3'})
