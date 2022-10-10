@@ -10,7 +10,7 @@ signs = {'equal': '  ', 'removed': '- ', 'added': '+ '}
 
 
 def sort_data(data):
-    sort_dict = sorted(data, key=lambda x: (x[0], x[3]))
+    sort_dict = sorted(data, key=lambda x: x[0])
     return sort_dict
 
 
