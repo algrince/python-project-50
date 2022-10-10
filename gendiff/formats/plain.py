@@ -76,9 +76,10 @@ def make_plain_string(old_key, val1, val2, status):
 
 
 def trans_var(var):
-    if isinstance(var, int):
+    if type(var) is int:
         return var
-    var = decode(var)
+    else:
+        var = decode(var)
     simple_vars = ['false', 'true', 'null',
                    '[complex value]']
     if var not in simple_vars:
