@@ -19,8 +19,6 @@ def make_formate(sort_dict, nest_lvl=0):
     for line in sort_dict:
         string_diff += make_line(line, space_count=nest_lvl + 2)
     ending_space = ' ' * nest_lvl + '}'
-    if nest_lvl == 0:
-        ending_space += '\n'
     string_diff += ending_space
     return string_diff
 

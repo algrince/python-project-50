@@ -7,7 +7,7 @@ from gendiff.gen_diff import generate_diff
 def test_stylish():
     with open('./tests/fixtures/structured_expected.txt', 'r') as fixture:
         expected = fixture.read()
-    assert expected == generate_diff(
+    assert expected[0:-1] == generate_diff(
             './tests/fixtures/structured_file1.json',
             './tests/fixtures/structured_file2.json',
             output_format='stylish'
