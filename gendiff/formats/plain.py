@@ -14,7 +14,7 @@ statuses = {
 def formate_plain(data, nest_lvl=0):
     sorted_data = sort_data(data)
     string_data = make_plain(sorted_data)
-    return string_data
+    return string_data[0:-1]
 
 
 def make_plain(sorted_data, key=''):
@@ -79,7 +79,9 @@ def trans_var(var):
     var = decode(var)
     simple_vars = ['false', 'true', 'null',
                    '[complex value]']
-    if var not in simple_vars:
+    if isinstance(var, str) is False:
+        return var
+    elif var not in simple_vars:
         var = f"'{var}'"
     return var
 

@@ -17,7 +17,7 @@ def test_stylish():
 def test_plain():
     with open('./tests/fixtures/plain_expected.txt', 'r') as fixture:
         expected = fixture.read()
-    assert expected == generate_diff(
+    assert expected[0:-1] == generate_diff(
             './tests/fixtures/structured_file1.json',
             './tests/fixtures/structured_file2.json',
             output_format='plain'
