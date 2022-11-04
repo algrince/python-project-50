@@ -74,8 +74,8 @@ The output can be printed in 3 different styles, which can be chosen when callin
 - If property is nested, its key is merged with all its parent keys including root.
 - Property withiout change is not dispayed. 
 <details>
-  <summary>Plain output</summary>
-```python
+<summary>Plain output</summary>
+<pre><code lang="python">
 Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to null
@@ -87,7 +87,7 @@ Property 'group1.baz' was updated. From 'bas' to 'bars'
 Property 'group1.nest' was updated. From [complex value] to 'str'
 Property 'group2' was removed
 Property 'group3' was added with value: [complex value]
-```
+</code></pre>
 </details>
 
 ### 'JSON' style
@@ -97,8 +97,8 @@ Property 'group3' was added with value: [complex value]
 - Updated property is shown with both 'added' and 'removed' lines in child dictionary.
 - Propierty that has suffered no changes if displayed without any correction.
 <details>
-  <summary>JSON output</summary>
-```python
+<summary>JSON output</summary>
+<pre><code lang="python">
 {
     "common": {
         "follow": {
@@ -165,7 +165,7 @@ Property 'group3' was added with value: [complex value]
         }
     }
 }
-```
+</code></pre>
 </details>
 
 ## Instalation
