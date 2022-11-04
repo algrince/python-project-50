@@ -16,8 +16,8 @@ The output can be printed in 3 different styles, which can be chosen when callin
 - One space before the key (included in identation) `+` or `-` is placed if the property is added or removed
 - If property is updated, diff includes removed line and the added one (in ths order)
 <details>
-  <summary>Stylish output</summary>
-```python
+<summary>Stylish output</summary>
+<pre><code lang="python">
 {
     common: {
       + follow: false
@@ -62,7 +62,7 @@ The output can be printed in 3 different styles, which can be chosen when callin
         fee: 100500
     }
 }
-```
+</code></pre>
 </details>
 
 
