@@ -17,7 +17,7 @@ The output can be printed in 3 different styles, which can be chosen when callin
 - If property is updated, diff includes removed line and the added one (in ths order)
 <details>
   <summary>Stylish output</summary>
-```
+```python
 {
     common: {
       + follow: false
@@ -75,7 +75,7 @@ The output can be printed in 3 different styles, which can be chosen when callin
 - Property withiout change is not dispayed. 
 <details>
   <summary>Plain output</summary>
-```
+```python
 Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to null
@@ -98,7 +98,7 @@ Property 'group3' was added with value: [complex value]
 - Propierty that has suffered no changes if displayed without any correction.
 <details>
   <summary>JSON output</summary>
-```
+```python
 {
     "common": {
         "follow": {
