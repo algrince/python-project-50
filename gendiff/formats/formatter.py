@@ -7,6 +7,7 @@ from gendiff.formats.plain import formate_plain
 
 
 def formate(diff, style):
+    '''Chooses the format'''
     if style == 'json':
         formatted_diff = formate_json(diff)
     if style == 'stylish':

@@ -10,11 +10,13 @@ signs = {'equal': '  ', 'removed': '- ', 'added': '+ '}
 
 
 def sort_data(data):
+    '''Sorts data'''
     sort_dict = sorted(data, key=lambda x: x[0])
     return sort_dict
 
 
 def make_formate(sort_dict, nest_lvl=0):
+    '''Formates data as default'''
     string_diff = '{\n'
     for line in sort_dict:
         string_diff += make_line(line, space_count=nest_lvl + 2)
@@ -24,6 +26,7 @@ def make_formate(sort_dict, nest_lvl=0):
 
 
 def make_line(line, formatter=' ', space_count=2):
+    '''Formates line for default presentation'''
     key, value, state, nest, update = line
     new_string = '{}{}{}: {}\n'
     string_line = new_string.format(
@@ -35,6 +38,7 @@ def make_line(line, formatter=' ', space_count=2):
 
 
 def formate_default(data):
+    '''Formates data as default'''
     sort_dict = sort_data(data)
     string_diff = make_formate(sort_dict)
     return string_diff

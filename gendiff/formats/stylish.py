@@ -7,6 +7,7 @@ signs = {'equal': '  ', 'removed': '- ', 'added': '+ ', 'nested': '  '}
 
 
 def formate_stylish(data, nest_lvl=0):
+    '''Fomates raw diff in stylish format'''
     sort_dict = sort_data(data)
     for line in sort_dict:
         if line[3] == 'nested':

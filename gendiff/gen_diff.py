@@ -11,11 +11,13 @@ STYLES = (NESTED, PLAIN) = ('nested', 'plain')
 
 
 def detect_nest(nest):
+    '''Returns style in function of nest vlaue'''
     return NESTED if nest is True else PLAIN
 
 
 def evaluate(  # noqa: C901
         key, diff, **kwargs):
+    '''Evaluates if values are nested'''
     v1 = kwargs.get('key1', ' ')
     v2 = kwargs.get('key2', ' ')
     v3 = kwargs.get('key3', ' ')
@@ -44,6 +46,7 @@ def evaluate_update(
     key, diff,
     nest1=False, nest2=False
 ):
+    '''Formes diff for updated data'''
     diff.append([key, var1, REMOVED,
                 detect_nest(nest1),
                 {UPDATED: var2}])
@@ -54,6 +57,7 @@ def evaluate_update(
 
 
 def evaluate_var(var, key, state, diff):
+    '''Generates evaluate var-type response for one var'''
     if isinstance(var, dict):
         value = diff_one(var)
         diff.append([key, value, state, NESTED, NO_UPD])
@@ -63,6 +67,7 @@ def evaluate_var(var, key, state, diff):
 
 
 def evaluate_vars(var1, var2, key, diff):
+    '''Generates diff-type response for two vars when one is nested'''
     if isinstance(var1, dict):
         value = diff_one(var1)
         diff = evaluate_update(value, var2, key, diff, nest1=True)
@@ -73,6 +78,7 @@ def evaluate_vars(var1, var2, key, diff):
 
 
 def diff_dict(dict1, dict2):
+    '''Extracts keys from the dictionaries in 3 groups and generates diff'''
     keys_d1 = dict1.keys()
     keys_d2 = dict2.keys()
     common = keys_d1 & keys_d2
@@ -93,6 +99,7 @@ def diff_dict(dict1, dict2):
 
 
 def diff_one(dict1):
+    '''Generates diff-type response for one dictionary'''
     diff = []
     keys = dict1.keys()
     for key in keys:
@@ -102,6 +109,7 @@ def diff_one(dict1):
 
 
 def generate_diff(file_path1, file_path2, output_format='stylish'):
+    '''Generates the formatted diff of two data'''
     data1 = parse(file_path1)
     data2 = parse(file_path2)
     diff = diff_dict(data1, data2)

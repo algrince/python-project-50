@@ -12,12 +12,14 @@ statuses = {
 
 
 def formate_plain(data, nest_lvl=0):
+    '''Formates raw diff in plain format'''
     sorted_data = sort_data(data)
     string_data = make_plain(sorted_data)
     return string_data[0:-1]
 
 
 def make_plain(sorted_data, key=''):
+    '''Formates data in plain formate'''
     string_data = ''
     for line in sorted_data:
         old_key, value, status, nest, update = line
@@ -37,6 +39,7 @@ def make_plain(sorted_data, key=''):
 
 
 def transform_update(update, status, value):
+    '''Changes satatus of updated value'''
     if isinstance(update, dict):
         value2 = update.get('updated')
         status = 'updated'
@@ -48,12 +51,14 @@ def transform_update(update, status, value):
 
 
 def transform_complex(var):
+    '''Replaces value with set string'''
     if isinstance(var, list):
         var = '[complex value]'
     return var
 
 
 def make_plain_string(old_key, val1, val2, status):
+    '''Formates a string'''
     added_status = statuses[status]
     val1 = trans_var(val1)
     val2 = trans_var(val2)
@@ -76,6 +81,7 @@ def make_plain_string(old_key, val1, val2, status):
 
 
 def trans_var(var):
+    '''Formates values'''
     if type(var) is int:
         return var
     else:
@@ -88,6 +94,7 @@ def trans_var(var):
 
 
 def transform_key(old_key, key):
+    '''Adds parent key to children'''
     if key != '':
         new_key = f'{key}.{old_key}'
     else:

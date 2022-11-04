@@ -5,12 +5,14 @@ from gendiff.formats.default import sort_data
 
 
 def formate_json(data, nest_lvl=0):
+    '''Formates data with json format'''
     dict_data = make_dict(data)
     json_data = dumps(dict_data, indent=4)
     return json_data
 
 
 def make_dict(data):
+    '''Makes a dict out of raw diff'''
     dict_data = {}
     sorted_data = sort_data(data)
     for line in sorted_data:
