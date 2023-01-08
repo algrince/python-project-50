@@ -29,7 +29,7 @@ def create_parcer():
 
 
 def main():
-    parcer = create_parcer()
+    parser = create_parcer()
     args = parser.parse_args()
     diff = generate_diff(
         args.first_file,
