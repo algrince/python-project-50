@@ -26,6 +26,7 @@ def create_parcer():
         choices=('stylish', 'plain', 'json'),
         help='set format of output (default: stylish)'
     )
+    return parser
 
 
 def main():
