@@ -7,27 +7,29 @@ import argparse
 DESCRIPTION = "Compares two configuration files and shows the difference"
 
 
-parser = argparse.ArgumentParser(description=DESCRIPTION)
-parser.add_argument(
-    'first_file',
-    type=str,
-    metavar='first_file'
-)
-parser.add_argument(
-    'second_file',
-    type=str,
-    metavar='second_file'
-)
-parser.add_argument(
-    '-f', '--format',
-    metavar='FORMAT',
-    default='stylish',
-    choices=('stylish', 'plain', 'json'),
-    help='set format of output (default: stylish)'
-)
+def create_parcer():
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
+    parser.add_argument(
+        'first_file',
+        type=str,
+        metavar='first_file'
+    )
+    parser.add_argument(
+        'second_file',
+        type=str,
+        metavar='second_file'
+    )
+    parser.add_argument(
+        '-f', '--format',
+        metavar='FORMAT',
+        default='stylish',
+        choices=('stylish', 'plain', 'json'),
+        help='set format of output (default: stylish)'
+    )
 
 
 def main():
+    parcer = create_parcer()
     args = parser.parse_args()
     diff = generate_diff(
         args.first_file,

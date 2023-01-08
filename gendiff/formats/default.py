@@ -3,7 +3,7 @@
 
 '''Default format for result representation '''
 
-from gendiff.scripts.decoder import decode
+from gendiff.decoder import decode
 
 
 signs = {'equal': '  ', 'removed': '- ', 'added': '+ '}

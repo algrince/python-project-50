@@ -1,7 +1,7 @@
 #!/usr/bin/env pyhton3
 
 from gendiff.formats.default import sort_data
-from gendiff.scripts.decoder import decode
+from gendiff.decoder import decode
 
 statuses = {
     'equal': '',
