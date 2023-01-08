@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-from gendiff.parser import parse
+from gendiff.parser import get_data
 from gendiff.formats.formatter import formate
 
 
@@ -110,8 +110,8 @@ def diff_one(dict1):
 
 def generate_diff(file_path1, file_path2, output_format='stylish'):
     '''Generates the formatted diff of two data'''
-    data1 = parse(file_path1)
-    data2 = parse(file_path2)
+    data1 = get_data(file_path1)
+    data2 = get_data(file_path2)
     diff = diff_dict(data1, data2)
     formatted_diff = formate(diff, output_format)
     return formatted_diff

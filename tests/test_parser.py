@@ -10,10 +10,14 @@ def test_format():
 
 
 def test_parser_json():
-    py_obj = parse('./tests/fixtures/file1.json')
+    with open('./tests/fixtures/file1.json', 'r') as f:
+        data = f.read()
+    py_obj = parse(data, 'json')
     assert isinstance(py_obj, dict)
 
 
 def test_parser_yaml():
-    py_obj = parse('./tests/fixtures/file1.yaml')
+    with open('./tests/fixtures/file1.yaml', 'r') as f:
+        data = f.read()
+    py_obj = parse(data, 'yaml')
     assert isinstance(py_obj, dict)

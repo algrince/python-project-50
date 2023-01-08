@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 
-from json import load as json_load
+from json import loads as json_load
 from yaml import safe_load as yaml_load
 from os.path import splitext
+
 
 
 def get_format(file_path):
@@ -12,11 +13,17 @@ def get_format(file_path):
     return file_ext.lstrip('.')
 
 
-def parse(file_path):
-    '''Opens the file'''
-    if get_format(file_path) == 'json':
-        with open(file_path) as files:
-            return json_load(files)
-    elif get_format(file_path) in ('yaml', 'yml'):
-        with open(file_path) as files:
-            return yaml_load(files)
+def parse(data, data_format):
+    '''Turns json or yaml data into python object'''
+    if data_format == 'json':
+        return json_load(data)
+    elif data_format in ('yaml', 'yml'):
+        return yaml_load(data)
+
+
+def get_data(file_path):
+    '''Reads data from the file'''
+    data_format = get_format(file_path)
+    with open(file_path) as f:
+        data = f.read()
+    return parse(data, data_format)
