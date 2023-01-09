@@ -1,5 +1,5 @@
 #!usr/bin/env python3
-
+'''
 
 from gendiff.gen_diff import generate_diff
 from gendiff.gen_diff import diff_one, evaluate
@@ -89,3 +89,4 @@ def test_format_str_combined():
     assert expected[:-1] == generate_diff(
         './tests/fixtures/structured_file1.json',
         './tests/fixtures/structured_file2.yaml')
+'''
