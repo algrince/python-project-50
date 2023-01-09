@@ -11,7 +11,9 @@ signs = {'equal': '  ', 'removed': '- ', 'added': '+ '}
 
 def sort_data(data):
     '''Sorts data'''
-    sort_dict = sorted(data, key=lambda x: x[0])
+    keys = list(data.keys())
+    keys.sort()
+    sort_dict = {key: data[key] for key in keys}
     return sort_dict
 
 

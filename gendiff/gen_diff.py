@@ -19,7 +19,7 @@ def diff_dict(data1, data2):
             elif isinstance(value1, dict) and isinstance(value2, dict):
                 diff.update({key: ['nested', diff_dict(value1, value2)]})
             else:
-                diff.update({key: ['changed', [value1, value2]]})
+                diff.update({key: ['changed', (value1, value2)]})
         elif key in keys1:
             value1 = data1[key]
             diff.update({key: ['removed', value1]})
@@ -34,6 +34,5 @@ def generate_diff(file_path1, file_path2, output_format='stylish'):
     data1 = get_data(file_path1)
     data2 = get_data(file_path2)
     diff = diff_dict(data1, data2)
-    print(diff)
     formatted_diff = formate(diff, output_format)
     return formatted_diff

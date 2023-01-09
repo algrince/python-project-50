@@ -4,10 +4,9 @@ from gendiff.formats.default import sort_data
 from gendiff.decoder import decode
 
 statuses = {
-    'equal': '',
     'added': "Property '{key}' was added with value: {value1}\n",
     'removed': "Property '{key}' was removed\n",
-    'updated': "Property '{key}' was updated. From {value1} to {value2}\n"
+    'changed': "Property '{key}' was updated. From {value1} to {value2}\n"
 }
 
 
@@ -21,67 +20,52 @@ def formate_plain(data, nest_lvl=0):
 def make_plain(sorted_data, key=''):
     '''Formates data in plain formate'''
     string_data = ''
-    for line in sorted_data:
-        old_key, value, status, nest, update = line
-        new_key = transform_key(old_key, key)
-        if update == 'updated':
+    for node in sorted_data:
+        new_key = transform_key(node, key)
+        status, values = sorted_data[node]
+        if status == 'unchanged':
             continue
-        elif nest == 'nested' and status == 'equal':
-            new_value = sorted(value, key=lambda x: x[0])
+        elif status == 'nested':
+            new_value = sort_data(values)
             string_line = make_plain(new_value, key=new_key)
-        elif status == 'equal':
-            continue
         else:
-            value, value2, status = transform_update(update, status, value)
-            string_line = make_plain_string(new_key, value, value2, status)
+            string_line = make_plain_string(new_key, values, status)
         string_data += string_line
     return string_data
 
 
-def transform_update(update, status, value):
-    '''Changes satatus of updated value'''
-    if isinstance(update, dict):
-        value2 = update.get('updated')
-        status = 'updated'
-    else:
-        value2 = None
-    value = transform_complex(value)
-    value2 = transform_complex(value2)
-    return value, value2, status
-
-
-def transform_complex(var):
-    '''Replaces value with set string'''
-    if isinstance(var, list):
-        var = '[complex value]'
-    return var
-
-
-def make_plain_string(old_key, val1, val2, status):
+def make_plain_string(old_key, values, status):
     '''Formates a string'''
     added_status = statuses[status]
-    val1 = trans_var(val1)
-    val2 = trans_var(val2)
+    if isinstance(values, tuple):
+        val1, val2 = values
+        string_line = added_status.format(
+            key=old_key,
+            value1=trans_var(val1),
+            value2=trans_var(val2)
+        )
     if status == 'added':
         string_line = added_status.format(
             key=old_key,
-            value1=val1
+            value1=trans_var(values)
         )
     elif status == 'removed':
         string_line = added_status.format(
             key=old_key
         )
-    elif status == 'updated':
-        string_line = added_status.format(
-            key=old_key,
-            value1=val1,
-            value2=val2
-        )
     return string_line
+
+
+def transform_complex(var):
+    '''Replaces value with set string'''
+    if isinstance(var, dict):
+        var = '[complex value]'
+    return var
 
 
 def trans_var(var):
     '''Formates values'''
+    var = transform_complex(var)
     if type(var) is int:
         return var
     else:
