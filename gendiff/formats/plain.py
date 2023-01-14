@@ -18,7 +18,7 @@ def formate_plain(data, nest_lvl=0):
 
 
 def make_plain(sorted_data, key=''):
-    '''Formates data in plain formate'''
+    '''Formates data in plain format'''
     string_data = ''
     for node in sorted_data:
         new_key = transform_key(node, key)
