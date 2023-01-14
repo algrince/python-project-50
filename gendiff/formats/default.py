@@ -6,7 +6,7 @@
 from gendiff.decoder import decode
 
 
-signs = {'equal': '  ', 'removed': '- ', 'added': '+ '}
+signs = {'unchanged': '  ', 'nested': '  ', 'removed': '- ', 'added': '+ '}
 
 
 def sort_data(data):
@@ -17,25 +17,54 @@ def sort_data(data):
     return sort_dict
 
 
+def transform_dict(var, space_count):
+    count = space_count
+    data = var
+    string_diff = '{\n'
+    if isinstance(var, dict):
+        for node in var:
+            if isinstance(var[node], dict):
+                var[node] = transform_dict(var[node], count+4)
+            line = {node: ['unchanged', var[node]]}
+            string_diff += make_line(line, space_count=count+4)
+        ending_space = ' ' * (count + 2) + '}'
+        string_diff += ending_space
+        return string_diff
+    return var             
+
+
 def make_formate(sort_dict, nest_lvl=0):
     '''Formates data as default'''
     string_diff = '{\n'
-    for line in sort_dict:
+    for node in sort_dict:
+        line = {node: sort_dict[node]}
         string_diff += make_line(line, space_count=nest_lvl + 2)
     ending_space = ' ' * nest_lvl + '}'
     string_diff += ending_space
     return string_diff
 
 
-def make_line(line, formatter=' ', space_count=2):
+def make_line(node, formatter=' ', space_count=2):
     '''Formates line for default presentation'''
-    key, value, state, nest, update = line
-    new_string = '{}{}{}: {}\n'
-    string_line = new_string.format(
-        formatter * space_count,
-        signs[state],
-        decode(key),
-        decode(value))
+    key = list(node.keys())[0]
+    status, values = node[key]
+    count = space_count
+    if status == 'changed':
+        value1 = transform_dict(values[0], count)
+        value2 = transform_dict(values[1], count)
+        string_line = make_line(
+            {key: ['removed', value1]}, space_count=count
+        ) + make_line(
+            {key: ['added', value2]}, space_count=count
+        )
+    else:
+        value = transform_dict(values, count)
+        new_string = '{}{}{}: {}\n'
+        string_line = new_string.format(
+            formatter * space_count,
+            signs[status],
+            decode(key),
+            decode(value))
     return string_line
 
 
