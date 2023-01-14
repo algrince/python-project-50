@@ -5,7 +5,8 @@ from gendiff.parser import get_data
 from gendiff.formats.formatter import formate
 
 
-def diff_dict(data1, data2):
+def diff_dict(  # noqa: C901
+        data1, data2):
     keys1 = set(data1)
     keys2 = set(data2)
     keys = keys1 | keys2

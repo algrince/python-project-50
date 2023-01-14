@@ -19,18 +19,18 @@ def sort_data(data):
 
 def transform_dict(var, space_count):
     count = space_count
-    data = var
     string_diff = '{\n'
     if isinstance(var, dict):
         for node in var:
             if isinstance(var[node], dict):
-                var[node] = transform_dict(var[node], count+4)
+                var[node] = transform_dict(var[node], count + 4)
             line = {node: ['unchanged', var[node]]}
-            string_diff += make_line(line, space_count=count+4)
+            string_diff += make_line(line, space_count=count + 4)
         ending_space = ' ' * (count + 2) + '}'
         string_diff += ending_space
+        print(string_diff)
         return string_diff
-    return var             
+    return var
 
 
 def make_formate(sort_dict, nest_lvl=0):

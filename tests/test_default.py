@@ -1,92 +1,66 @@
 #!usr/bin/env python3
-'''
-
-from gendiff.gen_diff import generate_diff
-from gendiff.gen_diff import diff_one, evaluate
 
 
-alfa = {
-    'key': 'value',
-    'llave': 'valor',
-    'kluc': 'znac',
-}
-
-beta = {
-    'key': 'value',
-    'llave': 'valor222',
-    'zamok': '123'
-}
+from gendiff.formats.default import (
+    sort_data, transform_dict, make_line, make_formate
+)
+from gendiff.decoder import decode
 
 
-def test_diff_one():
-    expected = [
-        ['key', 'value', 'equal', 'plain', 'not updated'],
-        ['llave', 'valor', 'equal', 'plain', 'not updated'],
-        ['kluc', 'znac', 'equal', 'plain', 'not updated']
-    ]
-    assert expected == diff_one(alfa)
+CHANGED = {'change_key': ['changed', ['value1', 'value2']]}
+ADDED = {'add_key': ['added', 'add_val']}
+REMOVED = {'remove_key': ['removed', 'rmv_val']}
+UNCHANGED = {'key': ['unchanged', 'value']}
 
 
-def test_evaluate_common():
-    equal_line = [['common', 'value', 'equal', 'plain', 'not updated']]
-    assert equal_line == evaluate('common', [],
-                                  **{'key1': 'value', 'key2': 'value'})
-    diff_line = [['common', '12345', 'removed', 'plain', {'updated': '67890'}],
-                 ['common', '67890', 'added', 'plain', 'updated']]
-    assert diff_line == evaluate('common', [],
-                                 **{'key1': '12345', 'key2': '67890'})
+def test_decode():
+    assert 'patata' == decode('patata')
+    assert 'null' == decode(None)
+    assert 'false' == decode(False)
+    assert 'true' == decode(True)
+    assert '12' == decode(12)
 
 
-def test_evaluate_diff1():
-    removed_line = [['diff_in_1', 'value1', 'removed', 'plain', 'not updated']]
-    added_line = [['diff_in_2', 'value2', 'added', 'plain', 'not updated']]
-    equal_line = [['key3', 'value3', 'equal', 'plain', 'not updated']]
-    assert removed_line == evaluate('diff_in_1', [], **{'key1': 'value1'})
-    assert added_line == evaluate('diff_in_2', [], **{'key2': 'value2'})
-    assert equal_line == evaluate('key3', [], **{'key3': 'value3'})
+def test_sort():
+    expected = {'a': 1, 'b': 45, 'cad': 'patata', 'e': False, 'zet': True}
+    to_sort = {'zet': True, 'cad': 'patata', 'b': 45, 'e': False, 'a': 1}
+
+    assert expected == sort_data(to_sort)
 
 
-def test_format_json():
-    with open('./tests/fixtures/expected.txt', 'r') as fixture:
-        expected = fixture.read()
-    assert expected[:-1] == generate_diff('./tests/fixtures/file1.json',
-                                          './tests/fixtures/file2.json')
+def test_transform_dict():
+    nested_var = {'key5': 'var5'}
+    simple_var = 'var6'
+
+    exp_nested_var = '{\n      key5: var5\n  }'
+    exp_simple_var = simple_var
+
+    assert exp_simple_var == transform_dict(simple_var, 2)
+    assert exp_nested_var == transform_dict(nested_var, 0)
 
 
-def test_format_yaml():
-    with open('./tests/fixtures/expected.txt', 'r') as fixture:
-        expected = fixture.read()
-    assert expected[:-1] == generate_diff('./tests/fixtures/file1.yaml',
-                                          './tests/fixtures/file2.yaml')
+def test_make_formate():
+    data = {**CHANGED, **ADDED, **REMOVED, **UNCHANGED}
+    sorted_data = sort_data(data)
+    expected_data = '{\n  + add_key: add_val\n  - change_key: value1\n  + change_key: value2\n    key: value\n  - remove_key: rmv_val\n}'  # noqa: E501
+
+    assert expected_data == make_formate(sorted_data)
 
 
-def test_format_combined():
-    with open('./tests/fixtures/expected.txt', 'r') as fixture:
-        expected = fixture.read()
-    assert expected[:-1] == generate_diff('./tests/fixtures/file1.json',
-                                          './tests/fixtures/file2.yaml')
+def test_make_line():
+    nested = {'nested_key': ['nested', {'key2': 'value'}]}
+    formated = {'key': ['unchanged', 'value']}
 
+    exp_changed = '  - change_key: value1\n  + change_key: value2\n'
+    exp_added = '  + add_key: add_val\n'
+    exp_removed = '  - remove_key: rmv_val\n'
+    exp_unchanged = '    key: value\n'
+    exp_nested = '    nested_key: {\n        key2: value\n    }\n'
+    exp_formated = '1111  key: value\n'
 
-def test_format_str_json():
-    with open('./tests/fixtures/structured_expected.txt', 'r') as fixture:
-        expected = fixture.read()
-    assert expected[:-1] == generate_diff(
-        './tests/fixtures/structured_file1.json',
-        './tests/fixtures/structured_file2.json')
-
-
-def test_format_str_yaml():
-    with open('./tests/fixtures/structured_expected.txt', 'r') as fixture:
-        expected = fixture.read()
-    assert expected[:-1] == generate_diff(
-        './tests/fixtures/structured_file1.yaml',
-        './tests/fixtures/structured_file2.yaml')
-
-
-def test_format_str_combined():
-    with open('./tests/fixtures/structured_expected.txt', 'r') as fixture:
-        expected = fixture.read()
-    assert expected[:-1] == generate_diff(
-        './tests/fixtures/structured_file1.json',
-        './tests/fixtures/structured_file2.yaml')
-'''
+    assert exp_changed == make_line(CHANGED)
+    assert exp_added == make_line(ADDED)
+    assert exp_removed == make_line(REMOVED)
+    assert exp_unchanged == make_line(UNCHANGED)
+    assert exp_nested == make_line(nested)
+    assert exp_formated == make_line(formated, formatter='1', space_count=4)
