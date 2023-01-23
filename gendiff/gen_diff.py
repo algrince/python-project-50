@@ -12,21 +12,24 @@ def diff_dict(  # noqa: C901
     keys = keys1 | keys2
     diff = dict()
     for key in keys:
-        if key in keys1 and key in keys2:
-            value1 = data1[key]
-            value2 = data2[key]
-            if value1 == value2:
-                diff.update({key: ['unchanged', value1]})
-            elif isinstance(value1, dict) and isinstance(value2, dict):
-                diff.update({key: ['nested', diff_dict(value1, value2)]})
-            else:
-                diff.update({key: ['changed', (value1, value2)]})
-        elif key in keys1:
+        if key in data1 and key not in data2:
             value1 = data1[key]
             diff.update({key: ['removed', value1]})
-        elif key in keys2:
+        elif key not in data1 and key in data2:
             value2 = data2[key]
             diff.update({key: ['added', value2]})
+        # all the other keys are present in both datas
+        elif data1[key] == data2[key]:
+            value1 = data1[key]
+            diff.update({key: ['unchanged', value1]})
+        elif isinstance(data1[key], dict) and isinstance(data2[key], dict):
+            value1 = data1[key]
+            value2 = data2[key]
+            diff.update({key: ['nested', diff_dict(value1, value2)]})
+        else:
+            value1 = data1[key]
+            value2 = data2[key]
+            diff.update({key: ['changed', (value1, value2)]})
     return diff
 
 
