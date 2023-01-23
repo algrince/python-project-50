@@ -1,8 +1,8 @@
 #!usr/bin/env python3
 
 
-from gendiff.formats.default import (
-    transform_dict, make_line, make_formate
+from gendiff.formats.stylish import (
+    make_stylish_dict, make_line, make_stylish_representation
 )
 from gendiff.formats.plain import sort_data
 from gendiff.decoder import decode
@@ -22,23 +22,23 @@ def test_decode():
     assert '12' == decode(12)
 
 
-def test_transform_dict():
+def test_make_stylish_dict():
     nested_var = {'key5': 'var5'}
     simple_var = 'var6'
 
     exp_nested_var = '{\n      key5: var5\n  }'
     exp_simple_var = simple_var
 
-    assert exp_simple_var == transform_dict(simple_var, 2)
-    assert exp_nested_var == transform_dict(nested_var, 0)
+    assert exp_simple_var == make_stylish_dict(simple_var, 2)
+    assert exp_nested_var == make_stylish_dict(nested_var, 0)
 
 
-def test_make_formate():
+def test_make_make_stylish_representation():
     data = {**CHANGED, **ADDED, **REMOVED, **UNCHANGED}
     sorted_data = sort_data(data)
     expected_data = '{\n  + add_key: add_val\n  - change_key: value1\n  + change_key: value2\n    key: value\n  - remove_key: rmv_val\n}'  # noqa: E501
 
-    assert expected_data == make_formate(sorted_data)
+    assert expected_data == make_stylish_representation(sorted_data)
 
 
 def test_make_line():
