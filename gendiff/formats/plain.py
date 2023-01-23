@@ -10,7 +10,7 @@ statuses = {
 }
 
 
-def formate_plain(data, nest_lvl=0):
+def format_plain(data, nest_lvl=0):
     '''Formates raw diff in plain format'''
     sorted_data = sort_data(data)
     string_data = make_plain(sorted_data)

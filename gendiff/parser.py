@@ -18,6 +18,8 @@ def parse(data, data_format):
         return json_load(data)
     elif data_format in ('yaml', 'yml'):
         return yaml_load(data)
+    else:
+        raise Exception("Invalid format for the file")
 
 
 def get_data(file_path):

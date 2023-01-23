@@ -67,7 +67,7 @@ def make_line(node, formatter=' ', space_count=2):
     return string_line
 
 
-def formate_default(data):
+def format_default(data):
     '''Formates data as default'''
     sort_dict = sort_data(data)
     string_diff = make_formate(sort_dict)

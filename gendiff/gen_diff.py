@@ -2,7 +2,7 @@
 
 
 from gendiff.parser import get_data
-from gendiff.formats.formatter import formate
+from gendiff.formats.formatter import format
 
 
 def diff_dict(  # noqa: C901
@@ -35,5 +35,5 @@ def generate_diff(file_path1, file_path2, output_format='stylish'):
     data1 = get_data(file_path1)
     data2 = get_data(file_path2)
     diff = diff_dict(data1, data2)
-    formatted_diff = formate(diff, output_format)
+    formatted_diff = format(diff, output_format)
     return formatted_diff
