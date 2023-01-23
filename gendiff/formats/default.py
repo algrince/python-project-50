@@ -25,9 +25,10 @@ def transform_dict(var, space_count):
             if isinstance(var[node], dict):
                 var[node] = transform_dict(var[node], count + 4)
             line = {node: ['unchanged', var[node]]}
-            string_diff += make_line(line, space_count=count + 4)
+            string_line = make_line(line, space_count=count + 4)
+            string_diff = "".join([string_diff, string_line])
         ending_space = ' ' * (count + 2) + '}'
-        string_diff += ending_space
+        string_diff = "".join([string_diff, ending_space])
         return string_diff
     return var
 
@@ -37,18 +38,19 @@ def make_formate(sort_dict, nest_lvl=0):
     string_diff = '{\n'
     for node in sort_dict:
         line = {node: sort_dict[node]}
-        string_diff += make_line(line, space_count=nest_lvl + 2)
+        string_line = make_line(line, space_count=nest_lvl + 2)
+        string_diff = "".join([string_diff, string_line])
     ending_space = ' ' * nest_lvl + '}'
-    string_diff += ending_space
+    string_diff = "".join([string_diff, ending_space])
     return string_diff
 
 
 def make_line(node, formatter=' ', space_count=2):
     '''Formates line for default presentation'''
     key = list(node.keys())[0]
-    status, values = node[key]
+    node_type, values = node[key]
     count = space_count
-    if status == 'changed':
+    if node_type == 'changed':
         value1 = transform_dict(values[0], count)
         value2 = transform_dict(values[1], count)
         string_line = make_line(
@@ -61,7 +63,7 @@ def make_line(node, formatter=' ', space_count=2):
         new_string = '{}{}{}: {}\n'
         string_line = new_string.format(
             formatter * space_count,
-            signs[status],
+            signs[node_type],
             decode(key),
             decode(value))
     return string_line

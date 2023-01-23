@@ -22,21 +22,21 @@ def make_plain(sorted_data, key=''):
     string_data = ''
     for node in sorted_data:
         new_key = transform_key(node, key)
-        status, values = sorted_data[node]
-        if status == 'unchanged':
+        node_type, values = sorted_data[node]
+        if node_type == 'unchanged':
             continue
-        elif status == 'nested':
+        elif node_type == 'nested':
             new_value = sort_data(values)
             string_line = make_plain(new_value, key=new_key)
         else:
-            string_line = make_plain_string(new_key, values, status)
-        string_data += string_line
+            string_line = make_plain_string(new_key, values, node_type)
+        string_data = "".join([string_data, string_line])
     return string_data
 
 
-def make_plain_string(old_key, values, status):
+def make_plain_string(old_key, values, node_type):
     '''Formates a string'''
-    added_status = statuses[status]
+    added_status = statuses[node_type]
     if isinstance(values, tuple):
         val1, val2 = values
         string_line = added_status.format(
@@ -44,12 +44,12 @@ def make_plain_string(old_key, values, status):
             value1=trans_var(val1),
             value2=trans_var(val2)
         )
-    if status == 'added':
+    if node_type == 'added':
         string_line = added_status.format(
             key=old_key,
             value1=trans_var(values)
         )
-    elif status == 'removed':
+    elif node_type == 'removed':
         string_line = added_status.format(
             key=old_key
         )
