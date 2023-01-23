@@ -2,8 +2,9 @@
 
 
 from gendiff.formats.default import (
-    sort_data, transform_dict, make_line, make_formate
+    transform_dict, make_line, make_formate
 )
+from gendiff.formats.plain import sort_data
 from gendiff.decoder import decode
 
 
@@ -19,13 +20,6 @@ def test_decode():
     assert 'false' == decode(False)
     assert 'true' == decode(True)
     assert '12' == decode(12)
-
-
-def test_sort():
-    expected = {'a': 1, 'b': 45, 'cad': 'patata', 'e': False, 'zet': True}
-    to_sort = {'zet': True, 'cad': 'patata', 'b': 45, 'e': False, 'a': 1}
-
-    assert expected == sort_data(to_sort)
 
 
 def test_transform_dict():

@@ -2,7 +2,7 @@
 
 from gendiff.formats.plain import (
     transform_complex, trans_var, transform_key,
-    make_plain_string, make_plain
+    make_plain_string, make_plain, sort_data
 )
 
 
@@ -47,3 +47,10 @@ def test_plain_string():
     assert added_line == make_plain_string('add_key', 'add_val', 'added')
     assert removed_line == make_plain_string('remove_key', 'rmv_val', 'removed')
     assert changed_line == make_plain_string('change_key', ('value1', 'value2'), 'changed')  # noqa: E501
+
+
+def test_sort():
+    expected = {'a': 1, 'b': 45, 'cad': 'patata', 'e': False, 'zet': True}
+    to_sort = {'zet': True, 'cad': 'patata', 'b': 45, 'e': False, 'a': 1}
+
+    assert expected == sort_data(to_sort)

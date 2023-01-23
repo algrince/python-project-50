@@ -1,6 +1,5 @@
 #!/usr/bin/env pyhton3
 
-from gendiff.formats.default import sort_data
 from gendiff.decoder import decode
 
 statuses = {
@@ -12,17 +11,16 @@ statuses = {
 
 def format_plain(data, nest_lvl=0):
     '''Formates raw diff in plain format'''
-    sorted_data = sort_data(data)
-    string_data = make_plain(sorted_data)
+    string_data = make_plain(data)
     return string_data[0:-1]
 
 
-def make_plain(sorted_data, key=''):
+def make_plain(data, key=''):
     '''Formates data in plain format'''
     string_data = ''
-    for node in sorted_data:
+    for node in data:
         new_key = transform_key(node, key)
-        node_type, values = sorted_data[node]
+        node_type, values = data[node]
         if node_type == 'unchanged':
             continue
         elif node_type == 'nested':
@@ -84,3 +82,10 @@ def transform_key(old_key, key):
     else:
         new_key = old_key
     return new_key
+
+def sort_data(data):
+    '''Sorts data'''
+    keys = list(data.keys())
+    keys.sort()
+    sort_dict = {key: data[key] for key in keys}
+    return sort_dict

@@ -3,6 +3,7 @@
 
 from gendiff.parser import get_data
 from gendiff.formats.formatter import format
+from gendiff.formats.plain import sort_data
 
 
 def diff_dict(  # noqa: C901
@@ -30,7 +31,7 @@ def diff_dict(  # noqa: C901
             value1 = data1[key]
             value2 = data2[key]
             diff.update({key: ['changed', (value1, value2)]})
-    return diff
+    return sort_data(diff)
 
 
 def generate_diff(file_path1, file_path2, output_format='stylish'):

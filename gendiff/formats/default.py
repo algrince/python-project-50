@@ -9,14 +9,6 @@ from gendiff.decoder import decode
 signs = {'unchanged': '  ', 'nested': '  ', 'removed': '- ', 'added': '+ '}
 
 
-def sort_data(data):
-    '''Sorts data'''
-    keys = list(data.keys())
-    keys.sort()
-    sort_dict = {key: data[key] for key in keys}
-    return sort_dict
-
-
 def transform_dict(var, space_count):
     count = space_count
     string_diff = '{\n'
@@ -33,11 +25,11 @@ def transform_dict(var, space_count):
     return var
 
 
-def make_formate(sort_dict, nest_lvl=0):
+def make_formate(data, nest_lvl=0):
     '''Formates data as default'''
     string_diff = '{\n'
-    for node in sort_dict:
-        line = {node: sort_dict[node]}
+    for node in data:
+        line = {node: data[node]}
         string_line = make_line(line, space_count=nest_lvl + 2)
         string_diff = "".join([string_diff, string_line])
     ending_space = ' ' * nest_lvl + '}'
@@ -71,6 +63,5 @@ def make_line(node, formatter=' ', space_count=2):
 
 def format_default(data):
     '''Formates data as default'''
-    sort_dict = sort_data(data)
-    string_diff = make_formate(sort_dict)
+    string_diff = make_formate(data)
     return string_diff
