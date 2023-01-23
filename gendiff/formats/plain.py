@@ -83,6 +83,7 @@ def transform_key(old_key, key):
         new_key = old_key
     return new_key
 
+
 def sort_data(data):
     '''Sorts data'''
     keys = list(data.keys())
