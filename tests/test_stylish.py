@@ -2,7 +2,7 @@
 
 
 from gendiff.formats.stylish import (
-    make_stylish_dict, make_line, make_stylish_representation
+    make_stylish_dict, make_line_from_node, make_stylish_represent
 )
 from gendiff.formats.plain import sort_data
 from gendiff.decoder import decode
@@ -33,12 +33,12 @@ def test_make_stylish_dict():
     assert exp_nested_var == make_stylish_dict(nested_var, 0)
 
 
-def test_make_make_stylish_representation():
+def test_make_make_stylish_represent():
     data = {**CHANGED, **ADDED, **REMOVED, **UNCHANGED}
     sorted_data = sort_data(data)
     expected_data = '{\n  + add_key: add_val\n  - change_key: value1\n  + change_key: value2\n    key: value\n  - remove_key: rmv_val\n}'  # noqa: E501
 
-    assert expected_data == make_stylish_representation(sorted_data)
+    assert expected_data == make_stylish_represent(sorted_data)
 
 
 def test_make_line():
@@ -52,9 +52,9 @@ def test_make_line():
     exp_nested = '    nested_key: {\n        key2: value\n    }\n'
     exp_formated = '111111  key: value\n'
 
-    assert exp_changed == make_line(CHANGED)
-    assert exp_added == make_line(ADDED)
-    assert exp_removed == make_line(REMOVED)
-    assert exp_unchanged == make_line(UNCHANGED)
-    assert exp_nested == make_line(nested)
-    assert exp_formated == make_line(formated, formatter='1', nest_lvl=1)
+    assert exp_changed == make_line_from_node(CHANGED)
+    assert exp_added == make_line_from_node(ADDED)
+    assert exp_removed == make_line_from_node(REMOVED)
+    assert exp_unchanged == make_line_from_node(UNCHANGED)
+    assert exp_nested == make_line_from_node(nested)
+    assert exp_formated == make_line_from_node(formated, formatter='1', nest_lvl=1)

@@ -9,13 +9,13 @@ statuses = {
 }
 
 
-def format_plain(data, nest_lvl=0):
+def format_diff_to_plain(data, nest_lvl=0):
     '''Formates raw diff in plain format'''
-    string_data = make_plain(data)
+    string_data = make_plain_represent(data)
     return string_data[0:-1]
 
 
-def make_plain(data, key=''):
+def make_plain_represent(data, key=''):
     '''Formates data in plain format'''
     string_data = ''
     for node in data:
@@ -25,14 +25,14 @@ def make_plain(data, key=''):
             continue
         elif node_type == 'nested':
             new_value = sort_data(values)
-            string_line = make_plain(new_value, key=new_key)
+            string_line = make_plain_represent(new_value, key=new_key)
         else:
-            string_line = make_plain_string(new_key, values, node_type)
+            string_line = make_plain_line_from_node(new_key, values, node_type)
         string_data = "".join([string_data, string_line])
     return string_data
 
 
-def make_plain_string(old_key, values, node_type):
+def make_plain_line_from_node(old_key, values, node_type):
     '''Formates a string'''
     added_status = statuses[node_type]
     if isinstance(values, tuple):
