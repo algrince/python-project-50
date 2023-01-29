@@ -75,8 +75,5 @@ def make_line_from_node(node, formatter=' ', nest_lvl=0):
 
 
 def trans_lvl_to_spaces(nest_lvl):
-    if nest_lvl == 0:
-        space_count = 2
-    else:
-        space_count = 2 + nest_lvl * 4
+    space_count = 2 + nest_lvl * 4
     return space_count

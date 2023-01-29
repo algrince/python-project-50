@@ -15,43 +15,40 @@ def format_diff_to_plain(data):
     return string_data[0:-1]
 
 
-def make_plain_represent(data, key=''):
+def make_plain_represent(  # noqa: C901
+        data, key=''):
     '''Formates data in plain format'''
     string_data = ''
     for node in data:
         new_key = transform_key(node, key)
         node_type, values = data[node]
+
         if node_type == 'unchanged':
             continue
         elif node_type == 'nested':
             new_value = sort_data(values)
             string_line = make_plain_represent(new_value, key=new_key)
-        else:
-            string_line = make_plain_line_from_node(new_key, values, node_type)
+            string_data = "".join([string_data, string_line])
+            continue
+        added_status = statuses[node_type]
+        if node_type == 'added':
+            string_line = added_status.format(
+                key=new_key,
+                value1=trans_var(values)
+            )
+        elif node_type == 'removed':
+            string_line = added_status.format(
+                key=new_key
+            )
+        elif isinstance(values, tuple):
+            val1, val2 = values
+            string_line = added_status.format(
+                key=new_key,
+                value1=trans_var(val1),
+                value2=trans_var(val2)
+            )
         string_data = "".join([string_data, string_line])
     return string_data
-
-
-def make_plain_line_from_node(old_key, values, node_type):
-    '''Formates a string'''
-    added_status = statuses[node_type]
-    if isinstance(values, tuple):
-        val1, val2 = values
-        string_line = added_status.format(
-            key=old_key,
-            value1=trans_var(val1),
-            value2=trans_var(val2)
-        )
-    if node_type == 'added':
-        string_line = added_status.format(
-            key=old_key,
-            value1=trans_var(values)
-        )
-    elif node_type == 'removed':
-        string_line = added_status.format(
-            key=old_key
-        )
-    return string_line
 
 
 def transform_complex(var):
