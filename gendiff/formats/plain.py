@@ -9,7 +9,7 @@ statuses = {
 }
 
 
-def format_diff_to_plain(data, nest_lvl=0):
+def format_diff_to_plain(data):
     '''Formates raw diff in plain format'''
     string_data = make_plain_represent(data)
     return string_data[0:-1]
