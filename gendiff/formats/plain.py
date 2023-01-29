@@ -1,6 +1,6 @@
 #!/usr/bin/env pyhton3
 
-from gendiff.decoder import decode
+from json import dumps
 
 statuses = {
     'added': "Property '{key}' was added with value: {value1}\n",
@@ -22,7 +22,6 @@ def make_plain_represent(  # noqa: C901
     for node in data:
         new_key = transform_key(node, key)
         node_type, values = data[node]
-
         if node_type == 'unchanged':
             continue
         elif node_type == 'nested':
@@ -34,7 +33,7 @@ def make_plain_represent(  # noqa: C901
         if node_type == 'added':
             string_line = added_status.format(
                 key=new_key,
-                value1=trans_var(values)
+                value1=transform_value(values)
             )
         elif node_type == 'removed':
             string_line = added_status.format(
@@ -44,32 +43,20 @@ def make_plain_represent(  # noqa: C901
             val1, val2 = values
             string_line = added_status.format(
                 key=new_key,
-                value1=trans_var(val1),
-                value2=trans_var(val2)
+                value1=transform_value(val1),
+                value2=transform_value(val2)
             )
         string_data = "".join([string_data, string_line])
     return string_data
 
 
-def transform_complex(var):
-    '''Replaces value with set string'''
-    if isinstance(var, dict):
-        var = '[complex value]'
-    return var
-
-
-def trans_var(var):
+def transform_value(value):
     '''Formates values'''
-    var = transform_complex(var)
-    if type(var) is int:
-        return var
-    else:
-        var = decode(var)
-    simple_vars = ['false', 'true', 'null',
-                   '[complex value]']
-    if var not in simple_vars:
-        var = f"'{var}'"
-    return var
+    if isinstance(value, dict):
+        return '[complex value]'
+    elif isinstance(value, str):
+        return f"'{value}'"
+    return dumps(value)
 
 
 def transform_key(old_key, key):

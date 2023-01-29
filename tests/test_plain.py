@@ -1,23 +1,19 @@
 #!usr/bin/env python3
 
 from gendiff.formats.plain import (
-    transform_complex, trans_var, transform_key,
+    transform_value, transform_key,
     make_plain_represent, sort_data
 )
 
 
-def test_trans_complex():
+def test_trans_value():
     complex_var = {'key': 'value'}
-    simple_var = 'value'
-    assert '[complex value]' == transform_complex(complex_var)
-    assert simple_var == transform_complex(simple_var)
 
-
-def test_trans_var():
-    assert 'false' == trans_var(False)
-    assert 'null' == trans_var(None)
-    assert 12 == trans_var(12)
-    assert "'patata'" == trans_var('patata')
+    assert '[complex value]' == transform_value(complex_var)
+    assert 'false' == transform_value(False)
+    assert 'null' == transform_value(None)
+    assert '12' == transform_value(12)
+    assert "'patata'" == transform_value('patata')
 
 
 def test_trans_key():
